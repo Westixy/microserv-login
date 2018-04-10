@@ -12,19 +12,11 @@
 */
 
 $router->get('/', function () use ($router) {
-    return $router->app->version();
+    return response()->json(['version'=>'1.0.0', 'description'=>'micro-service used to register / verify if the credentials are available'],200);
 });
 
-$router->post('/login',
-['middleware' => 'auth',
-function() {
-    return response()->json(['login'=>'OK'],200);
-}
-]
-);
-
+$router->post('/login', 'UserController@login');
 $router->post('/register', 'UserController@register');
-
-$router->get('/login', ['middleware' => 'auth', function() {
-    return response()->json(['login'=>'OK'],200);
-}]);
+$router->post('/reset-password', 'UserController@resetPassword');
+$router->get('/login', 'UserController@getLogin');
+$router->delete('/delete', 'UserController@delete');
