@@ -51,7 +51,7 @@ class UserController extends Controller
             'password' => 'required'
         ]);
         $user = User::where('email', $request->input('email'))->first();
-        if(empty($user)) return response()->json(['status' => 'fail', 'error'=>'user not found : '.$request->input('email')],401);
+        if(empty($user)) return response()->json(['status' => 'fail', 'error'=>'user not found : '.$request->input('email')],404);
         if(Hash::check($request->input('password'), $user->password)) {
             return response()->json(['status' => 'success','userUid' => $user->uuid]);
         }else{
@@ -67,8 +67,24 @@ class UserController extends Controller
             'uuid' => 'required'
         ]);
         $user = User::where('uuid', $request->input('uuid'))->first();
-        if(empty($user)) return response()->json(['status' => 'fail', 'error'=>'user not found : '.$request->input('uuid')],401);
+        if(empty($user)) return response()->json(['status' => 'fail', 'error'=>'user not found : '.$request->input('uuid')],404);
         else return response()->json(['status' => 'success', 'userUid' => $user->uuid, 'email'=> $user->email,'userId'=>$user->id],200);
+    }
+
+    /**
+     * reset the password of the user
+     */
+    public function updatePassword(Request $request) {
+        $this->validate($request, [
+            'uuid' => 'required',
+            'password' => 'required'
+        ]);
+        $user = User::where('uuid', $request->input('uuid'))->first();
+        if(empty($user)) return response()->json(['status' => 'fail', 'error'=>'user not found : '.$request->input('uuid')],404);
+        else {
+            $user->update(['password'=> Hash::make($request->input('password'))]);
+            return response()->json(['status' => 'success', 'message'=>'password updated' ,'userUid' => $user->uuid, 'email'=> $user->email,'userId'=>$user->id],200);
+        }
     }
 
     /**
@@ -76,14 +92,14 @@ class UserController extends Controller
      */
     public function resetPassword(Request $request) {
         $this->validate($request, [
-            'uuid' => 'required',
-            'password' => 'required'
+            'email' => 'required'
         ]);
-        $user = User::where('uuid', $request->input('uuid'))->first();
-        if(empty($user)) return response()->json(['status' => 'fail', 'error'=>'user not found : '.$request->input('uuid')],401);
+        $user = User::where('email', $request->input('email'))->first();
+        if(empty($user)) return response()->json(['status' => 'fail', 'error'=>'user not found : '.$request->input('email')],404);
         else {
-            $user->update(['password'=> Hash::make($request->input('password'))]);
-            return response()->json(['status' => 'success', 'message'=>'password updated' ,'userUid' => $user->uuid, 'email'=> $user->email,'userId'=>$user->id],200);
+            $pass = str_random(8);
+            $user->update(['password'=> Hash::make($pass)]);
+            return response()->json(['status' => 'success', 'message'=>'password reset' ,'userUid' => $user->uuid, 'email'=> $user->email,'userId'=>$user->id, 'password'=>$pass],200);
         }
     }
 
@@ -95,7 +111,7 @@ class UserController extends Controller
             'uuid' => 'required'
         ]);
         $user = User::where('uuid', $request->input('uuid'))->first();
-        if(empty($user)) return response()->json(['status' => 'fail', 'error'=>'user not found : '.$request->input('uuid')],401);
+        if(empty($user)) return response()->json(['status' => 'fail', 'error'=>'user not found : '.$request->input('uuid')],404);
         else {
             $uuid = str_random(60);
             while(!empty(User::where('uuid', $uuid)->first())) $uuid = str_random(60);
@@ -112,7 +128,7 @@ class UserController extends Controller
             'uuid' => 'required'
         ]);
         $user = User::where('uuid', $request->input('uuid'))->first();
-        if(empty($user)) return response()->json(['status' => 'fail', 'error'=>'user not found : '.$request->input('uuid')],401);
+        if(empty($user)) return response()->json(['status' => 'fail', 'error'=>'user not found : '.$request->input('uuid')],404);
         else {
             $email = $user->email;
             $user->forceDelete();
