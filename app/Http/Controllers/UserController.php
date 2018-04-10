@@ -72,7 +72,7 @@ class UserController extends Controller
     }
 
     /**
-     * reset the password of the user
+     * update the password of the user
      */
     public function updatePassword(Request $request) {
         $this->validate($request, [
