@@ -99,7 +99,7 @@ class UserController extends Controller
         else {
             $uuid = str_random(60);
             while(!empty(User::where('uuid', $uuid)->first())) $uuid = str_random(60);
-            $user->update(['uuid'=>str_random(60)]);
+            $user->update(['uuid'=>$uuid]);
             return response()->json(['status' => 'success', 'message' => 'user uid updated', 'uuid'=> $uuid],200);
         }
     }

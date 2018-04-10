@@ -19,4 +19,5 @@ $router->post('/login', 'UserController@login');
 $router->post('/register', 'UserController@register');
 $router->post('/reset-password', 'UserController@resetPassword');
 $router->get('/login', 'UserController@getLogin');
+$router->get('/update-uid', 'UserController@updateUid');
 $router->delete('/delete', 'UserController@delete');
