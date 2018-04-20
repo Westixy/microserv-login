@@ -3,7 +3,8 @@
 ## run 
 
 1. clone the repo
-2. start a php serv with `php -S localhost:8000`
+2. Run `composer install`
+3. start a php serv with `php -S localhost:8000`
 
 ## Routes
 ### GET /login
